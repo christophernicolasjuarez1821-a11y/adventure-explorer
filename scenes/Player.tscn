@@ -1,10 +1,18 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scripts/Player.gd" type="Script" id=1]
 
 [sub_resource type="CapsuleShape" id=1]
 radius = 0.4
 height = 1.8
+
+[sub_resource type="SpatialMaterial" id=2]
+flags_transparent = true
+albedo_color = Color( 0.941176, 0.847059, 0.0745098, 1 )
+
+[sub_resource type="CubeMesh" id=3]
+material = SubResource( 2 )
+size = Vector3( 1.02, 1.02, 1.02 )
 
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 1 )
@@ -14,3 +22,28 @@ shape = SubResource( 1 )
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0 )
+
+[node name="HUD" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="Crosshair" type="Label" parent="HUD"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -10.0
+margin_top = -12.0
+margin_right = 10.0
+margin_bottom = 8.0
+custom_colors/font_color = Color( 0.92549, 0.831373, 0.0509804, 1 )
+text = "Text: +"
+align = 1
+valign = 1
+
+[node name="BlockHighlight" type="MeshInstance" parent="."]
+cast_shadow = 0
+mesh = SubResource( 3 )

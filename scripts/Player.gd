@@ -10,6 +10,7 @@ var velocity = Vector3()
 var block_scene = preload("res://scenes/Block.tscn")
 
 onready var camera = $Camera
+onready var highlight = $BlockHighlight
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -65,6 +66,8 @@ func _physics_process(delta):
 
 	velocity = move_and_slide(velocity, Vector3.UP)
 
+	update_highlight()
+
 func get_target():
 	var from = camera.global_transform.origin
 	var to = from + (-camera.global_transform.basis.z) * reach
@@ -80,3 +83,18 @@ func place_block(result):
 	var block = block_scene.instance()
 	block.transform.origin = pos
 	get_parent().add_child(block)
+
+func update_highlight():
+	var result = get_target()
+
+	if result.empty():
+		highlight.visible = false
+		return
+
+	var body = result.collider
+
+	if body.is_in_group("blocks"):
+		highlight.visible = true
+		highlight.global_transform.origin = body.global_transform.origin
+	else:
+		highlight.visible = false
