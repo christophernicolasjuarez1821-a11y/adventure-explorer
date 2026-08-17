@@ -1,4 +1,6 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scripts/Block.gd" type="Script" id=1]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 0.5, 0, 1 )
@@ -10,6 +12,7 @@ size = Vector3( 1, 1, 1 )
 albedo_color = Color( 0.627451, 0.301961, 0.027451, 1 )
 
 [node name="Block" type="StaticBody" groups=["blocks"]]
+script = ExtResource( 1 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )

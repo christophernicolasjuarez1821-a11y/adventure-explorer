@@ -8,16 +8,8 @@ export var height_scale = 3.0
 var block_scene = preload("res://scenes/Block.tscn")
 var noise = OpenSimplexNoise.new()
 
-var grass_mat = SpatialMaterial.new()
-var dirt_mat = SpatialMaterial.new()
-
-func _ready():
-	noise.seed = world_seed
-	grass_mat.albedo_color = Color(0.25, 0.7, 0.25)
-	dirt_mat.albedo_color = Color(0.45, 0.32, 0.2)
-	generate()
-
 func generate():
+	noise.seed = world_seed
 	var half = size / 2
 
 	for x in range(-half, half):
@@ -26,14 +18,31 @@ func generate():
 			var h = int(round((n + 1.0) * 0.5 * height_scale)) + 1
 
 			for y in range(1, h + 1):
-				var block = block_scene.instance()
-				block.transform.origin = Vector3(x, y, z)
+				var t = "grass" if y == h else ("dirt" if y > h - 3 else "stone")
+				add_block(Vector3(x, y, z), t)
 
-				var mesh_instance = block.get_node("MeshInstance")
+func add_block(pos, type):
+	var block = block_scene.instance()
+	block.block_type = type
+	block.transform.origin = pos
+	add_child(block)
 
-				if y == h:
-					mesh_instance.material_override = grass_mat
-				else:
-					mesh_instance.material_override = dirt_mat
+func clear_blocks():
+	for c in get_children():
+		c.queue_free()
 
-				add_child(block)
+func load_blocks(blocks):
+	clear_blocks()
+
+	for b in blocks:
+		add_block(Vector3(b[0], b[1], b[2]), b[3])
+
+func get_save_data():
+	var data = []
+
+	for c in get_children():
+		if c.is_in_group("blocks"):
+			var p = c.transform.origin
+			data.append([int(p.x), int(p.y), int(p.z), c.block_type])
+
+	return data
